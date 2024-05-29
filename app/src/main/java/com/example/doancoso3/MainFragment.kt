@@ -80,8 +80,7 @@ class MainFragment : AuthFragment() {
                 viewP.add(product)
             }
 
-            adapter.list = viewP
-            adapter.notifyDataSetChanged()
+            adapter.updateList(viewP)
         }
 
         val rvTutorial = view.findViewById<RecyclerView>(R.id.rv_tutorial)
@@ -104,8 +103,7 @@ class MainFragment : AuthFragment() {
                 viewT.add(tutorial)
             }
 
-            adapterT.list = viewT
-            adapterT.notifyDataSetChanged()
+            adapterT.updateList(viewT)
         }
 
         adapter.setOnHeartClickedListener { product, pos ->
@@ -200,7 +198,7 @@ class MainFragment : AuthFragment() {
                 currentItem++
 
                 // Kiểm tra nếu đã đến cuối danh sách
-                if (currentItem >= rvReviews.adapter?.itemCount ?: 0) {
+                if (currentItem >= (rvReviews.adapter?.itemCount ?: 0)) {
                     currentItem = 0 // Quay lại vị trí đầu tiên
                 }
 
@@ -403,8 +401,6 @@ class MainFragment : AuthFragment() {
     override fun onResume() {
         super.onResume()
         // Đảm bảo NestedScrollView cuộn về đầu khi Fragment được hiển thị lại
-        view?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.let {
-            it.scrollTo(0, 0)
-        }
+        view?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.scrollTo(0, 0)
     }
 }

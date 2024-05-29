@@ -129,6 +129,8 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:id="@+id/rv_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -176,6 +178,8 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:id="@+id/rv_tutorial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -222,6 +226,8 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:id="@+id/rv_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

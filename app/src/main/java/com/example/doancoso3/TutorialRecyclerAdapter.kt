@@ -11,15 +11,20 @@ import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.TextView
 import android.widget.VideoView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.doancoso3.R
+import com.example.doancoso3.TutorialDiffCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class TutorialRecyclerAdapter(
     val context: Context,
     var list: List<Tutorial> = emptyList()
 ) : RecyclerView.Adapter<TutorialRecyclerAdapter.ViewHolder>() {
-    private  var handleHeartBtnClick: ((Tutorial, Int) -> Unit)? = null
+    private var handleHeartBtnClick: ((Tutorial, Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.tutorial_item, parent, false)
@@ -42,27 +47,34 @@ class TutorialRecyclerAdapter(
         handleHeartBtnClick = listener
     }
 
-inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    private val video = view.findViewById<VideoView>(R.id.videoView)
-    private val tutorialName = view.findViewById<TextView>(R.id.tv_tn)
-    private val mediaController = MediaController(context)
-    val btnHeart = itemView.findViewById<ImageView>(R.id.img_heart)!!
-    private var isVideoLoaded = false // Biến boolean để đánh dấu xem video đã được tải hay chưa
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val video = view.findViewById<VideoView>(R.id.videoView)
+        private val tutorialName = view.findViewById<TextView>(R.id.tv_tn)
+        private val mediaController = MediaController(context)
+        val btnHeart = itemView.findViewById<ImageView>(R.id.img_heart)!!
 
-    init {
-        video.setOnClickListener {
-            mediaController.setAnchorView(video)
-            video.setMediaController(mediaController)
-            mediaController.show()
+        init {
+            val coroutineScope = CoroutineScope(Dispatchers.Main)
+            video.setOnClickListener {
+                coroutineScope.launch {
+                    mediaController.setAnchorView(video)
+                    video.setMediaController(mediaController)
+                    mediaController.show()
+                }
+            }
+        }
+
+        fun bind(tutorial: Tutorial) {
+            tutorialName.text = tutorial.tutorialName
+            video.setVideoPath(tutorial.video)
+//        video.requestFocus()
+            video.seekTo(100)
         }
     }
 
-    fun bind(tutorial: Tutorial) {
-        tutorialName.text = tutorial.tutorialName
-        video.setVideoPath(tutorial.video)
-//        video.requestFocus()
-        video.seekTo(100)
+    fun updateList(newList: List<Tutorial>) {
+        val diffResult = DiffUtil.calculateDiff(TutorialDiffCallback(list, newList))
+        list = newList
+        diffResult.dispatchUpdatesTo(this)
     }
-}
-
 }

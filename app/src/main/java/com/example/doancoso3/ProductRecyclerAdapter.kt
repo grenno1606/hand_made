@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.doancoso3.MainFragment
+import com.example.doancoso3.ProductDiffCallback
 import com.example.doancoso3.R
 import com.example.doancoso3.Utils
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +71,7 @@ class ProductRecyclerAdapter(
 
         fun bind(product: Product) {
             productName.text=product.productName
-            dpe.text="-"+product.discountPercentage.toString()+"%"
+            "-${product.discountPercentage}%".also { dpe.text = it }
             val content1 = SpannableString(dong.text)
             content1.setSpan(StrikethroughSpan(), 0, content1.length, 0)
             dong.text=content1
@@ -84,5 +86,12 @@ class ProductRecyclerAdapter(
                 imgView.visibility = View.GONE
             }
         }
+    }
+
+    fun updateList(newList: List<Product>) {
+        val diffResult = DiffUtil.calculateDiff(ProductDiffCallback(list, newList))
+        list = newList
+        diffResult.dispatchUpdatesTo(this)
+
     }
 }
